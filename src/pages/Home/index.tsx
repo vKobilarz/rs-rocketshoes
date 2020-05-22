@@ -1,5 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 
+import { connect } from 'react-redux';
+
 import { MdAddShoppingCart } from 'react-icons/md';
 
 import IProduct from '../../interfaces/Product';
@@ -8,9 +10,11 @@ import { formatPrice } from '../../util/format';
 
 import { ProductList } from './styles';
 
-interface Props {}
+interface Props {
+  dispatch: Function;
+}
 
-const Home: FC = () => {
+const Home: FC<Props> = ({ dispatch }: Props) => {
   const [products, setProducts] = useState<IProduct[]>([]);
 
   useEffect(() => {
@@ -28,6 +32,13 @@ const Home: FC = () => {
     fetchData();
   }, []);
 
+  const handleAddProduct = (product: IProduct) => {
+    dispatch({
+      type: 'ADD_TO_CART',
+      product,
+    });
+  };
+
   return (
     <ProductList>
       {products.map((product: IProduct) => (
@@ -35,7 +46,7 @@ const Home: FC = () => {
           <img src={product.image} alt={product.title} />
           <strong>{product.title}</strong>
           <span>{product.priceFormatted}</span>
-          <button type="button">
+          <button type="button" onClick={() => handleAddProduct(product)}>
             <div>
               <MdAddShoppingCart size={16} color="#fff" /> 3
             </div>
@@ -47,4 +58,4 @@ const Home: FC = () => {
   );
 };
 
-export default Home;
+export default connect()(Home);

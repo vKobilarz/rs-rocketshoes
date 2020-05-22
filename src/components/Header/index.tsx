@@ -1,14 +1,18 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { MdShoppingBasket } from 'react-icons/md';
 
 import { Container, Cart } from './styles';
 
 import logo from '../../assets/images/logo.svg';
+import IReduxState from '../../interfaces/ReduxState';
 
-interface Props {}
+interface Props {
+  cartSize: number;
+}
 
-const Header: FC = ({}: Props) => {
+const Header: FC<Props> = ({ cartSize }: Props) => {
   return (
     <Container>
       <Link to="/">
@@ -17,7 +21,7 @@ const Header: FC = ({}: Props) => {
       <Cart to="/cart">
         <div>
           <strong>Meu carrinho</strong>
-          <span>3 itens</span>
+          <span>{cartSize} itens</span>
         </div>
         <MdShoppingBasket size={36} color="#FFF" />
       </Cart>
@@ -25,4 +29,6 @@ const Header: FC = ({}: Props) => {
   );
 };
 
-export default Header;
+export default connect(({ cart }: IReduxState) => ({ cartSize: cart.length }))(
+  Header
+);
